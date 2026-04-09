@@ -1,0 +1,67 @@
+[project]
+name = "precip-extremes-scaling"
+version = "0.1.0"
+description = "Python implementation of precip extreme scaling from O'Gorman and Schneider (2009)."
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [{ name = "Oliver Angelil" }]
+dependencies = [
+  "icc-rt>=2020.0.133",
+  "numba>=0.65.0",
+  "numpy>=2.2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pre-commit>=4.2.0",
+  "pytest>=8.3.5",
+  "python-semantic-release>=9.21.1",
+  "ruff>=0.11.5",
+]
+
+[project.scripts]
+precip-extremes-scaling = "precip_extremes_scaling.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+  "ipykernel>=7.2.0",
+  "line-profiler>=5.0.2",
+  "pre-commit>=4.2.0",
+  "pytest>=8.3.5",
+  "python-semantic-release>=9.21.1",
+  "ruff>=0.11.5",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+  "E",
+  "F",
+  "I",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.semantic_release]
+branch = "main"
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/precip_extremes_scaling/__init__.py:__version__"]
+build_command = "uv build"
+changelog_file = "CHANGELOG.md"
+commit_parser = "conventional"
+allow_zero_version = true
+major_on_zero = false
+upload_to_pypi = false
+upload_to_release = true
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
