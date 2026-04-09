@@ -5,3 +5,4 @@ dist/
 build/
 *.egg-info/
 notebooks/_*.ipynb
+**__pycache__/*
