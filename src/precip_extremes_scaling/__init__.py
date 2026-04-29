@@ -3,4 +3,4 @@
 from precip_extremes_scaling.core import scaling, scaling_nb
 
 __all__ = ["scaling", "scaling_nb"]
-__version__ = "0.1.2"
+__version__ = "0.1.3"
