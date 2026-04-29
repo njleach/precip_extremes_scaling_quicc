@@ -219,8 +219,8 @@ def saturation_thermodynamics_nb(
     iliquid = temp >= t0
     imixed = (temp > ti) * (temp < t0)
 
-    es = np.ones(temp.size) * np.nan
-    latent_heat = np.ones(temp.size) * np.nan
+    es = np.full(temp.size, np.nan)
+    latent_heat = np.full(temp.size, np.nan)
 
     if iice.any():
         es[iice] = esi[iice]
@@ -331,7 +331,6 @@ def scaling_nb(
 
     dqsat_dp, dqsat_dt, _ = sat_deriv_nb(plev, temp)
     _, qsat, _, _ = saturation_thermodynamics_nb(temp, plev)
-    lapse_rate = moist_adiabatic_lapse_rate_nb(temp, plev)
 
     temp_virtual = temp * (
         1.0
@@ -339,23 +338,17 @@ def scaling_nb(
         * (constants.GAS_CONSTANT_WATER_VAPOR / constants.GAS_CONSTANT_DRY_AIR - 1.0)
     )
     rho = plev / constants.GAS_CONSTANT_DRY_AIR / temp_virtual
-    dt_dp = lapse_rate / constants.GRAVITY / rho
 
-    dqsat_dp_total = dqsat_dp + dqsat_dt * dt_dp
+    dqsat_dp_total = dqsat_dp + dqsat_dt * (moist_adiabatic_lapse_rate_nb(temp, plev) / constants.GRAVITY / rho)
 
-    dtemp_dp_env = gradient_fast(temp, plev)
-    lapse_rate_env = dtemp_dp_env * rho * constants.GRAVITY
-
-    itrop = np.where(lapse_rate_env > crit_lapse_rate)[0]
+    itrop = np.where((gradient_fast(temp, plev) * rho * constants.GRAVITY) > crit_lapse_rate)[0]
     if itrop.size != 0 and np.max(itrop) + 1 < len(plev):
         dqsat_dp_total[np.max(itrop) + 1 :] = 0
 
     dqsat_dp_total[plev < plev_mask] = 0
 
     # Hylke bugfix: mask descent
-    omega_masked = np.where(omega < 0, omega, 0)
-
-    dqsat_dp_total_omega = dqsat_dp_total * omega_masked
+    dqsat_dp_total_omega = dqsat_dp_total * np.where(omega < 0, omega, 0)
     dqsat_dp_total_omega[np.isnan(dqsat_dp_total_omega)] = 0
 
     dqsat_dp_total_omega[plev > ps] = 0
