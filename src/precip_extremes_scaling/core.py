@@ -358,8 +358,6 @@ def scaling_nb(
     dqsat_dp_total_omega = dqsat_dp_total * omega_masked
     dqsat_dp_total_omega[np.isnan(dqsat_dp_total_omega)] = 0
 
-    kbot = plev > ps
-    if kbot.any():
-        dqsat_dp_total_omega[kbot] = 0
+    dqsat_dp_total_omega[plev > ps] = 0
 
     return -np.trapezoid(-dqsat_dp_total_omega, plev) / constants.GRAVITY
