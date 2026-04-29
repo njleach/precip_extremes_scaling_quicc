@@ -317,9 +317,14 @@ def scaling_nb(
     plev: np.ndarray,
     ps: float,
 ) -> float:
-    """Estimate precipitation in kg/m^2/s from vertical profiles."""
+    """Estimate precipitation in kg/m^2/s from vertical profiles.
+    
+    Assumes pressure levels are consistent across variables."""
     if plev[0] < plev[1]:
-        raise ValueError("unexpected ordering of pressure levels")
+        plev_idx = np.argsort(plev)[::-1] # sort in descending order
+        plev = plev[plev_idx]
+        temp = temp[plev_idx]
+        omega = omega[plev_idx]
 
     crit_lapse_rate = 0.002
     plev_mask = 0.05e5
@@ -346,6 +351,9 @@ def scaling_nb(
         dqsat_dp_total[np.max(itrop) + 1 :] = 0
 
     dqsat_dp_total[plev < plev_mask] = 0
+
+    # Hylke bugfix: mask descent
+    omega[omega > 0] = 0
 
     dqsat_dp_total_omega = dqsat_dp_total * omega
     dqsat_dp_total_omega[np.isnan(dqsat_dp_total_omega)] = 0
