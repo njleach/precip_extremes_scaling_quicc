@@ -39,6 +39,42 @@ ps = 100000
 precip = scaling(omega, temp, plev, ps)  # ~6.1e-05 kg/m^2/s
 ```
 
+## Xarray example
+
+If your data are already in `xarray`, you can apply the compiled kernel across profile columns with `xr.apply_ufunc`:
+
+```python
+import numpy as np
+import xarray as xr
+import precip_extremes_scaling
+
+# `ds` is an xarray Dataset with:
+# - `w`: vertical velocity with a `level` dimension
+# - `t`: temperature with a `level` dimension
+# - `level`: pressure levels in hPa, ordered from highest pressure to lowest
+ds = xr.open_dataset("profiles.nc")
+
+scaling = xr.apply_ufunc(
+    precip_extremes_scaling.scaling_nb,
+    ds.w,
+    ds.t,
+    ds.level.values[:] * 100,
+    ds.ps,
+    input_core_dims=[["level"], ["level"], ["level"], []],
+    output_core_dims=[[]],
+    output_dtypes=[np.float64],
+    vectorize=True,
+    dask="parallelized",
+)
+```
+
+For best performance with Dask:
+
+- Use chunked inputs across horizontal or time dimensions, but keep the full `level` axis in each chunk because it is the core dimension passed to `scaling_nb`.
+- Cache or persist reused inputs before calling `apply_ufunc`; as usual, chunked and cached inputs will be much quicker when using Dask.
+- Expect the first call to `scaling_nb` to be much slower because Numba has to compile the kernel once. Reusing the same worker processes lets later calls run much faster.
+- Keep inputs in a consistent floating-point dtype, ideally `float64`, to avoid extra casting work inside large Dask graphs.
+
 ## Benchmarks
 
 <!-- benchmarks:start -->
