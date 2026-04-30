@@ -7,8 +7,8 @@ def msl_to_ps(msl, t, z, lapse_rate=-0.0065):
     uniform (constant) lapse rate.
 
     The barometric formula is applied for a linear temperature profile
-    T(z) = T0 + L * z, where L is lapse_rate (K/m) and T0 is the provided
-    temperature t (assumed at z = 0, i.e. mean sea level). Hydrostatic balance
+    T(z) = T0 + L * z, where L is lapse_rate (K/m) and T0 is the
+    temperature at z = 0, i.e. mean sea level. Hydrostatic balance
     and the ideal gas law are assumed (constants taken from
     precip_extremes_scaling.constants).
 
