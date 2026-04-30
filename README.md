@@ -39,6 +39,24 @@ ps = 100000
 precip = scaling(omega, temp, plev, ps)  # ~6.1e-05 kg/m^2/s
 ```
 
+## Benchmarks
+
+<!-- benchmarks:start -->
+_Automatically generated from seeded random profiles._
+
+Benchmarked with `250` random profiles, `10` pressure levels per profile, `5` timed rounds, and RNG seed `0`.
+
+| Implementation | Mean per call |
+|---|---:|
+| `scaling` | 333.81 us |
+| `scaling_nb` first call | 5.84 s |
+| `scaling_nb` warm | 2.54 us |
+
+Warm-call speedup: `131.59x`
+
+Agreement over sampled profiles: median abs diff `1.698e-06`, max abs diff `3.591e-04`
+<!-- benchmarks:end -->
+
 ## Development
 
 Install git hooks:
@@ -53,6 +71,7 @@ Run checks locally:
 uv run ruff check .
 uv run ruff format --check .
 uv run pytest
+uv run python scripts/update_benchmarks.py
 ```
 
 ## Release process
