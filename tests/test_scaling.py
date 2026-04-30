@@ -14,6 +14,7 @@ def test_scaling_matches_readme_example() -> None:
 
     assert precip == pytest.approx(6.1e-05, rel=1e-2)
 
+
 def test_scaling_numba() -> None:
     omega = np.linspace(-0.3, 0.2, 10)
     temp = np.linspace(270, 220, 10)
