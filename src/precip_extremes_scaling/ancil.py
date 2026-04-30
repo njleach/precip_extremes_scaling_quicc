@@ -14,7 +14,7 @@ def msl_to_ps(msl, t, z, lapse_rate=-0.0065):
 
     Parameters:
     msl (float): Mean sea level pressure in Pascals (Pa).
-    t (float): Reference temperature T0 in Kelvin (K) at height z = 0.
+    t (float): Temperature in Kelvin (K) at height z.
     z (float): Height above mean sea level in meters^2 per second^2 (m^2/s^2).
     lapse_rate (float): Constant lapse rate L in K/m (negative if temperature
                         decreases with height, e.g. -0.0065 K/m).
