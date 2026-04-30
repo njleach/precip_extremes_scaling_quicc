@@ -80,17 +80,17 @@ For best performance with Dask:
 <!-- benchmarks:start -->
 _Automatically generated from seeded random profiles._
 
-Benchmarked with `250` random profiles, `10` pressure levels per profile, `5` timed rounds, and RNG seed `0`.
+Benchmarked with `1000` random profiles, `10` pressure levels per profile, `5` timed rounds, and RNG seed `0`.
 
 | Implementation | Mean per call |
 |---|---:|
-| `scaling` | 333.81 us |
-| `scaling_nb` first call | 5.84 s |
-| `scaling_nb` warm | 2.54 us |
+| `scaling` | 318.30 us |
+| `scaling_nb` first call | 6.45 s |
+| `scaling_nb` warm | 2.36 us |
 
-Warm-call speedup: `131.59x`
+Warm-call speedup: `134.85x`
 
-Agreement over sampled profiles: median abs diff `1.698e-06`, max abs diff `3.591e-04`
+Agreement over sampled profiles: median abs diff `1.944e-06`, max abs diff `4.288e-04`
 <!-- benchmarks:end -->
 
 ## Development
